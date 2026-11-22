@@ -39,21 +39,27 @@ out. Optional keys in `meta.json`: `expected_missed` (list of reference-step tex
 
 ## Current results (synthetic placeholders, mock provider)
 
-The repository ships synthetic placeholder videos until real recordings are added. Their
-ground truth is exact, so these numbers check the plumbing (windowing, segmentation, boundary
-refinement, alignment, missed/out-of-order detection) rather than vision quality:
+**These numbers are not real-model accuracy.** The demo videos in the repository are synthetic
+placeholders (colour blocks with moving shapes) and the run below used the offline `mock`
+provider, which labels a window from its colour. The ground truth is exact by construction, so a
+score of 1.00 only shows that the plumbing works: windowing, segmentation, boundary refinement,
+alignment, and missed or out-of-order detection. It says nothing about how a vision-language
+model performs on real kitchen or workshop footage. Re-run after recording real demos with a
+real provider.
+
+Run on a Linux container (CPU only, no GPU), mock providers, hashing embedding fallback, no
+speech model:
 
 | Demo | GT steps | Detected | Recall | Precision | Mean IoU | Kendall τ | Missed-step check | Compression | Processing s / min |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| omelette | 7 | 7 | 1.00 | 1.00 | 0.99 | 1.00 | ✓ correct | 1.2× | 64.1 |
-| omelette-skipped-step | 6 | 6 | 1.00 | 1.00 | 0.99 | 1.00 | ✓ correct | 1.2× | 67.3 |
-| shelf-assembly | 5 | 5 | 1.00 | 1.00 | 0.99 | 1.00 | ✓ correct | 1.2× | 74.8 |
-| **mean** |  |  | **1.00** | **1.00** | **0.99** | **1.00** | **3/3** | **1.2**× | **68.7** |
+| omelette | 7 | 7 | 1.00 | 1.00 | 0.99 | 1.00 | ✓ correct | 1.2× | 39.1 |
+| omelette-skipped-step | 6 | 6 | 1.00 | 1.00 | 0.99 | 1.00 | ✓ correct | 1.2× | 32.9 |
+| shelf-assembly | 5 | 5 | 1.00 | 1.00 | 0.99 | 1.00 | ✓ correct | 1.2× | 34.2 |
+| **mean** |  |  | **1.00** | **1.00** | **0.99** | **1.00** | **3/3** | **1.2**× | **35.4** |
 
 Compression is low here only because the placeholders are about one minute long and the reel
 target is 40 to 60 s. On a real 3 to 10 minute recording the reel stays at the target, so
-compression is 3 to 10×. Processing time was measured on a Windows laptop (CPU only, 16 GB
-RAM) and is dominated by ffmpeg rendering in mock mode. With a
+compression is 3 to 10×. Processing time is dominated by ffmpeg rendering in mock mode. With a
 real provider, the understanding stage depends on the provider's latency (4 calls in parallel
 by default).
 
