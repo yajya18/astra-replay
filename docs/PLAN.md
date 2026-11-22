@@ -65,7 +65,7 @@ This file is the running plan. Items are ticked as each one is finished and veri
 ### M9 — Hardening
 - [ ] Acceptance checklist pass (Section 10 of the spec), final commit
   - [x] 1 full test and lint run
-  - [ ] 2 Playwright e2e
+  - [x] 2 Playwright e2e
   - [ ] 3 demo precompute and evaluation table
   - [ ] 4 browser review at desktop and 375 px, Lighthouse
   - [ ] 5 README screenshots, team section
