@@ -71,7 +71,7 @@ This file is the running plan. Items are ticked as each one is finished and veri
   - [x] 5 README screenshots, team section
   - [x] 6 acceptance checks
   - [x] 7 copy polish
-  - [ ] Submission deck (docs/presentation)
+  - [x] Submission deck (docs/presentation)
   - [ ] Demo video (docs/media)
 
 #### Acceptance checklist status (local run, re-verified in the final pass)

@@ -3,5 +3,14 @@
   "college": "Thapar Institute of Engineering and Technology",
   "track_no": "4",
   "track_name": "Action Aware Video Summarization",
-  "members": ["Yajya Arora", "Sandhi Gahlot", "Hardik Jain", "Durva"]
+  "members": [
+    "Yajya Arora",
+    "Sandhi Gahlot",
+    "Hardik Jain",
+    "Durva"
+  ],
+  "project": "Replay",
+  "tagline": "Action-aware video summarization",
+  "repo_url": "https://github.com/yajya18/astra-replay",
+  "demo_video_url": "https://github.com/yajya18/astra-replay/blob/main/docs/media/replay-demo.mp4"
 }
