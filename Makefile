@@ -20,6 +20,7 @@ help:
 
 setup:
 	cd $(BACKEND) && $(UV) sync --all-extras
+	cd $(BACKEND) && $(UV) run python -m scripts.download_models
 	cd $(FRONTEND) && $(NPM) install
 	cd $(FRONTEND) && npx playwright install chromium
 
@@ -40,7 +41,7 @@ test-backend:
 test-frontend:
 	cd $(FRONTEND) && $(NPM) test
 
-e2e:
+e2e: test-videos
 	cd $(FRONTEND) && $(NPM) run test:e2e
 
 lint: lint-backend lint-frontend
@@ -62,7 +63,7 @@ demo:
 	cd $(BACKEND) && $(UV) run python -m scripts.precompute_demo
 
 eval:
-	cd $(BACKEND) && $(UV) run python -m scripts.evaluate
+	cd $(BACKEND) && $(UV) run python -m scripts.evaluate --out ../docs/evaluation_results.md
 
 docker:
 	docker compose up --build
