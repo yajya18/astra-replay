@@ -178,11 +178,18 @@ def run(
     def done(result: WindowResult) -> None:
         with lock:
             results[result.window.id] = result
-            a = result.action
-            if not a.is_idle and a.verb != "unknown" and len(first_actions) < 6:
+            # Build the preview in video order, not in completion order: windows
+            # finish out of order when several run at once.
+            first_actions.clear()
+            for _, r in sorted(results.items()):
+                a = r.action
+                if a.is_idle or a.verb == "unknown":
+                    continue
                 label = " ".join(p for p in (a.verb, a.object) if p)
                 if label not in first_actions:
                     first_actions.append(label)
+                if len(first_actions) == 6:
+                    break
             count = len(results)
         ctx.update_info(windows_analyzed=count, first_actions=list(first_actions))
         ctx.progress(

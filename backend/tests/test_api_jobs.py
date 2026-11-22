@@ -153,7 +153,10 @@ def test_sse_streams_progress_until_done(
                 break
     assert events, "expected progress events"
     assert events[-1]["status"] == "completed"
-    assert any(e["stage"] == "motion" for e in events)
+    # The stream polls, so a fast job may skip a stage; progress must still never go backwards.
+    progress = [float(e["progress"]) for e in events]  # type: ignore[arg-type]
+    assert progress == sorted(progress)
+    assert progress[-1] == 1.0
 
 
 def test_cancel_queued_job_then_retry(
