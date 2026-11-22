@@ -10,10 +10,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app import __version__
-from app.api import health
+from app.api import health, jobs, media
 from app.config import get_settings
 from app.db import init_db
 from app.errors import install_error_handlers
+from app.worker import get_worker
 
 log = logging.getLogger("replay")
 
@@ -41,7 +42,14 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
         s.llm_provider,
         s.model_for("llm"),
     )
-    yield
+    worker = get_worker()
+    worker.start()
+    if s.seed_demos_on_startup:
+        worker.seed_demos()
+    try:
+        yield
+    finally:
+        worker.shutdown()
 
 
 def create_app() -> FastAPI:
@@ -62,7 +70,7 @@ def create_app() -> FastAPI:
         expose_headers=["Content-Range", "Accept-Ranges", "Content-Length", "Content-Disposition"],
     )
     install_error_handlers(app)
-    for module in (health,):
+    for module in (health, jobs, media):
         app.include_router(module.router)
     return app
 

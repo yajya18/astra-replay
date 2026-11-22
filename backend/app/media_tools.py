@@ -177,3 +177,77 @@ def iter_raw_frames(
     finally:
         proc.kill()
         proc.wait()
+
+
+def ffmpeg_with_progress(
+    args: Sequence[str],
+    *,
+    duration: float,
+    on_progress: Callable[[float], None],
+    cwd: Path | None = None,
+    cancel: CancelCheck | None = None,
+) -> None:
+    """Run ffmpeg, reporting the fraction of ``duration`` processed so far."""
+    s = get_settings()
+    cmd = [
+        s.ffmpeg_binary,
+        "-hide_banner",
+        "-nostdin",
+        "-loglevel",
+        "error",
+        "-y",
+        "-progress",
+        "pipe:1",
+        "-nostats",
+        *args,
+    ]
+    proc = subprocess.Popen(
+        cmd,
+        cwd=str(cwd) if cwd else None,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        stdin=subprocess.DEVNULL,
+        creationflags=_CREATE_NO_WINDOW,
+    )
+    err_chunks: list[bytes] = []
+    assert proc.stdout is not None
+    assert proc.stderr is not None
+    err_thread = threading.Thread(
+        target=lambda: err_chunks.extend(iter(lambda: proc.stderr.read(65536), b"")),  # type: ignore[union-attr]
+        daemon=True,
+    )
+    err_thread.start()
+    last = 0.0
+
+    def _reader() -> None:
+        nonlocal last
+        for raw in iter(proc.stdout.readline, b""):  # type: ignore[union-attr]
+            line = raw.decode("ascii", errors="ignore").strip()
+            if line.startswith("out_time_us=") or line.startswith("out_time_ms="):
+                value = line.split("=", 1)[1]
+                if value.isdigit() and duration > 0:
+                    frac = min(1.0, int(value) / 1_000_000 / duration)
+                    if frac - last >= 0.01:
+                        last = frac
+                        on_progress(frac)
+
+    out_thread = threading.Thread(target=_reader, daemon=True)
+    out_thread.start()
+    try:
+        while True:
+            try:
+                proc.wait(timeout=0.2)
+                break
+            except subprocess.TimeoutExpired:
+                if cancel is not None and cancel():
+                    proc.kill()
+                    proc.wait()
+                    raise JobCancelledError() from None
+    finally:
+        out_thread.join(timeout=5)
+        err_thread.join(timeout=5)
+    if proc.returncode != 0:
+        stderr = b"".join(err_chunks).decode("utf-8", errors="replace")
+        tail = "\n".join(stderr.strip().splitlines()[-8:])
+        raise FFmpegError(f"ffmpeg exited with code {proc.returncode}", tail)
+    on_progress(1.0)

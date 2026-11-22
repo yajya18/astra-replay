@@ -10,7 +10,12 @@ from sqlmodel import Field, SQLModel
 
 
 def utcnow() -> datetime:
-    return datetime.now(UTC).replace(tzinfo=None)
+    return datetime.now(UTC)
+
+
+def iso(dt: datetime) -> str:
+    aware = dt if dt.tzinfo is not None else dt.replace(tzinfo=UTC)
+    return aware.astimezone(UTC).isoformat().replace("+00:00", "Z")
 
 
 class JobStatus:
