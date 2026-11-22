@@ -130,7 +130,7 @@ def test_fallback_summary_shape() -> None:
     assert out.phases[0].start_order == 1
     assert out.phases[-1].end_order == 4
     assert 2 <= len(out.phases) <= 6
-    assert out.task_name == "Making a omelette" or out.task_name.startswith("Making")
+    assert out.task_name == "Cooking with egg and egg mixture"
 
 
 # ------------------------------------------------------------------ alignment

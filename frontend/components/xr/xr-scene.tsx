@@ -129,7 +129,7 @@ export default function XRScene({
   }, [steps]);
 
   return (
-    <Canvas camera={{ position: [0, 1.5, 0.9], fov: 60 }} dpr={[1, 2]}>
+    <Canvas camera={{ position: [0, 1.55, -0.2], fov: 62 }} dpr={[1, 2]}>
       <XR store={store}>
         <color attach="background" args={["#0b0c12"]} />
         <ambientLight intensity={0.8} />

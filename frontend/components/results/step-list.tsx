@@ -69,7 +69,10 @@ export function StepList({ result, activeOrder, onSelect }: Props) {
               />
               {phase.name}
               <span className="font-normal text-muted">
-                · steps {phase.start_step}–{phase.end_step}
+                ·{" "}
+                {phase.start_step === phase.end_step
+                  ? `step ${phase.start_step}`
+                  : `steps ${phase.start_step}–${phase.end_step}`}
               </span>
             </h3>
             <ol className="space-y-2">

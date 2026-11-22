@@ -55,7 +55,7 @@ test("upload a synthetic video in mock mode and reach a results page with steps"
   await expect(steps.nth(1)).toHaveAttribute("aria-current", "step");
 
   // Search finds a step by meaning and answers with a timestamp.
-  await page.getByLabel("Search the video").fill("when did I whisk the eggs?");
+  await page.getByRole("textbox", { name: "Search the video" }).fill("when did I whisk the eggs?");
   await page.getByRole("button", { name: "Search" }).click();
   await expect(page.getByRole("list", { name: "Search results" })).toBeVisible();
   await expect(page.getByText(/\d+:\d\d/).first()).toBeVisible();

@@ -84,13 +84,18 @@ def fallback_phases(steps: Sequence[StepData]) -> list[Phase]:
 
 
 def fallback_task_name(steps: Sequence[StepData]) -> str:
-    objects = [s.object for s in steps if s.object]
+    objects = [s.object for s in steps if s.object and s.verb != "unknown"]
     verbs = {normalize_verb(s.verb) for s in steps}
     if not objects:
         return "A hands-on task"
+    ranked = [o for o, _ in Counter(objects).most_common()]
+    top = ranked[0]
     if verbs & COOKING_VERBS:
-        return f"Making a {objects[-1]}"
-    return f"Working on the {Counter(objects).most_common(1)[0][0]}"
+        if len(ranked) == 1:
+            return f"Cooking with {top}"
+        first_two = sorted(ranked[:2], key=objects.index)
+        return f"Cooking with {first_two[0]} and {first_two[1]}"
+    return f"Working on the {top}"
 
 
 def fallback_summary_text(steps: Sequence[StepData], titles: Sequence[str]) -> str:

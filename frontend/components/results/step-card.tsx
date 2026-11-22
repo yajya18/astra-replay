@@ -80,7 +80,10 @@ export const StepCard = forwardRef<HTMLLIElement, Props>(function StepCard(
             {formatTime(step.start)}–{formatTime(step.end)} · {formatDuration(step.duration)} ·{" "}
             {Math.round(step.confidence * 100)}% confident
           </p>
-          <ul className="mt-2 flex flex-wrap gap-1.5" aria-label="Action">
+          <ul
+            className={cn("mt-2 flex flex-wrap gap-1.5", step.clip_url && "pr-16")}
+            aria-label="Action"
+          >
             <li>
               <Badge tone="accent">
                 <Hand className="h-3 w-3" aria-hidden /> {step.verb}
