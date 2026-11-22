@@ -6,37 +6,37 @@ This file is the running plan. Items are ticked as each one is finished and veri
 ## Milestones and task list
 
 ### M1 — Scaffold
-- [ ] Repo layout, `.gitignore`, `.env.example`, LICENSE
-- [ ] Backend: `pyproject.toml` (uv), ruff, mypy (strict on `app/pipeline`, `app/providers`), pytest
-- [ ] Backend: `config.py` (pydantic-settings), `main.py` (CORS, error shape, routers), `/api/health`
-- [ ] Frontend: Next.js App Router + TS + Tailwind, theme (dark/light), layout shell, ESLint + Prettier, Vitest
-- [ ] Dockerfiles, `docker-compose.yml`, `Makefile`
-- [ ] `make lint test` green, commit
+- [x] Repo layout, `.gitignore`, `.env.example`, LICENSE
+- [x] Backend: `pyproject.toml` (uv), ruff, mypy (strict on `app/pipeline`, `app/providers`), pytest
+- [x] Backend: `config.py` (pydantic-settings), `main.py` (CORS, error shape, routers), `/api/health`
+- [x] Frontend: Next.js App Router + TS + Tailwind, theme (dark/light), layout shell, ESLint + Prettier, Vitest
+- [x] Dockerfiles, `docker-compose.yml`, `Makefile`
+- [x] `make lint test` green, commit
 
 ### M2 — Ingest, motion, worker, synthetic videos
-- [ ] `scripts/make_test_video.py` (colored segments, moving shapes, idle stills, hard cut, portrait-rotated, no-audio, HEVC, VFR)
-- [ ] DB models (Job, Video, Step, ReferenceStep, Export), SQLite via SQLModel
-- [ ] Streaming multipart upload → disk with size limit, UUID paths, per-IP rate limit
-- [ ] Worker: thread pool, persisted job state, progress events, cancellation, restart recovery, retry from failed stage
-- [ ] SSE progress endpoint
-- [ ] Ingest: ffprobe validation, limits, rotation/HEVC/VFR → H.264 720p CFR 30 fps + mono 16 kHz WAV
-- [ ] Motion curve, adaptive idle spans, PySceneDetect cuts
-- [ ] Integration tests on synthetic videos, commit
+- [x] `scripts/make_test_video.py` (colored segments, moving shapes, idle stills, hard cut, portrait-rotated, no-audio, HEVC, VFR)
+- [x] DB models (Job, Video, Step, ReferenceStep, Export), SQLite via SQLModel
+- [x] Streaming multipart upload → disk with size limit, UUID paths, per-IP rate limit
+- [x] Worker: thread pool, persisted job state, progress events, cancellation, restart recovery, retry from failed stage
+- [x] SSE progress endpoint
+- [x] Ingest: ffprobe validation, limits, rotation/HEVC/VFR → H.264 720p CFR 30 fps + mono 16 kHz WAV
+- [x] Motion curve, adaptive idle spans, PySceneDetect cuts
+- [x] Integration tests on synthetic videos, commit
 
 ### M3 — Understanding with providers
-- [ ] `providers/base.py` interfaces, provider registry from `VLM_PROVIDER` / `LLM_PROVIDER`
-- [ ] `mock` provider (deterministic, offline)
-- [ ] `gemini`, `openai`, `anthropic`, `ollama` providers (current SDK APIs, models in config)
-- [ ] Adaptive windowing, sharp-frame sampling, 4/8 frames per window
-- [ ] Concurrency limit, per-call timeout, exponential backoff, strict JSON + repair retry + fallback
-- [ ] Window cache keyed by hash(frames + prompt version + model)
-- [ ] Verb normalization + synonym map, tests, commit
+- [x] `providers/base.py` interfaces, provider registry from `VLM_PROVIDER` / `LLM_PROVIDER`
+- [x] `mock` provider (deterministic, offline)
+- [x] `gemini`, `openai`, `anthropic`, `ollama` providers (current SDK APIs, models in config)
+- [x] Adaptive windowing, sharp-frame sampling, 4/8 frames per window
+- [x] Concurrency limit, per-call timeout, exponential backoff, strict JSON + repair retry + fallback
+- [x] Window cache keyed by hash(frames + prompt version + model)
+- [x] Verb normalization + synonym map, tests, commit
 
 ### M4 — Segmentation, summarization, alignment
-- [ ] `segment.py` pure functions + unit tests (merge rules, cuts, idle, short-step absorption, boundary refinement)
-- [ ] `summarize.py` with validation and deterministic fallback + tests
-- [ ] `align.py` Hungarian + one-to-many + LLM verification + LIS ordering + verdict, tests (all done / one missed / swapped / extra / empty)
-- [ ] Optional faster-whisper transcription, commit
+- [x] `segment.py` pure functions + unit tests (merge rules, cuts, idle, short-step absorption, boundary refinement)
+- [x] `summarize.py` with validation and deterministic fallback + tests
+- [x] `align.py` Hungarian + one-to-many + LLM verification + LIS ordering + verdict, tests (all done / one missed / swapped / extra / empty)
+- [x] Optional faster-whisper transcription, commit
 
 ### M5 — Media, search, exports
 - [ ] Keyframes (sharpness × motion-peak closeness, WebP + JPEG, 480 px)

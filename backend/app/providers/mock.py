@@ -20,7 +20,6 @@ from pydantic import BaseModel
 from app.pipeline.textnorm import (
     content_tokens,
     gerund,
-    imperative_title,
     normalize_verb,
     parse_step_text,
 )
@@ -40,29 +39,6 @@ DEFAULT_ACTIONS: list[tuple[str, str, str]] = [
     ("season", "omelette", "salt shaker"),
     ("plate", "omelette", "spatula"),
 ]
-
-_COOKING_VERBS = {
-    "crack",
-    "whisk",
-    "chop",
-    "slice",
-    "dice",
-    "fry",
-    "heat",
-    "pour",
-    "season",
-    "plate",
-    "flip",
-    "cook",
-    "stir",
-    "boil",
-    "bake",
-    "grate",
-    "peel",
-    "mix",
-    "toast",
-    "spread",
-}
 
 
 def _palette_hues() -> list[float]:
@@ -149,54 +125,30 @@ def _fmt_time(seconds: float) -> str:
 
 
 def _mock_summary(data: dict[str, Any]) -> dict[str, Any]:
-    steps: list[dict[str, Any]] = data.get("steps", [])
-    n = len(steps)
-    titles = [
-        imperative_title(s.get("verb", ""), s.get("object", ""), s.get("tool", "")) for s in steps
-    ]
-    verbs = {normalize_verb(s.get("verb", "")) for s in steps}
-    cooking = bool(verbs & _COOKING_VERBS)
-    names = ["Prep", "Cook", "Finish"] if cooking else ["Set up", "Main work", "Finish"]
-    if n <= 1:
-        bounds = [(1, max(1, n))]
-        names = ["Main work"]
-    elif n <= 3:
-        bounds = [(1, 1), (2, n)]
-        names = [names[0], names[1]]
-    else:
-        a = max(1, round(n / 3))
-        b = max(a + 1, round(2 * n / 3))
-        bounds = [(1, a), (a + 1, b), (b + 1, n)]
-    phases = [
-        {"name": name, "start_order": lo, "end_order": hi}
-        for name, (lo, hi) in zip(names, bounds, strict=False)
-        if lo <= hi
-    ]
-    objects = [s.get("object", "") for s in steps if s.get("object")]
-    if cooking and objects:
-        task = f"Making a {objects[-1]}"
-    elif objects:
-        task = f"Working on the {Counter(objects).most_common(1)[0][0]}"
-    else:
-        task = "A hands-on task"
-    if n == 0:
-        summary = "No clear actions were detected in this video."
-    else:
-        duration = max(float(s.get("end", 0)) for s in steps)
-        first = titles[0][0].lower() + titles[0][1:]
-        last = titles[-1][0].lower() + titles[-1][1:]
-        summary = f"You completed {n} step{'s' if n != 1 else ''} in about {_fmt_time(duration)}."
-        summary += (
-            f" You started by {gerund(first.split()[0])} {' '.join(first.split()[1:])}".rstrip()
+    # Imported here: app.pipeline.summarize imports the provider registry.
+    from app.pipeline.summarize import fallback_summary
+    from app.pipeline.types import StepData
+
+    steps = [
+        StepData(
+            id=int(s.get("order", i + 1)),
+            order=int(s.get("order", i + 1)),
+            start=float(s.get("start", 0)),
+            end=float(s.get("end", 0)),
+            verb=str(s.get("verb", "")),
+            object=str(s.get("object", "")),
+            tool=str(s.get("tool", "")),
+            description=str(s.get("description", "")),
         )
-        summary += (
-            f" and finished by {gerund(last.split()[0])} {' '.join(last.split()[1:])}.".replace(
-                "  ", " "
-            )
-            if n > 1
-            else "."
-        )
-    return {"task_name": task, "summary": summary, "titles": titles, "phases": phases}
+        for i, s in enumerate(data.get("steps", []))
+    ]
+    out = fallback_summary(steps)
+    return {
+        "task_name": out.task_name,
+        "summary": out.summary,
+        "titles": out.titles,
+        "phases": [p.model_dump() for p in out.phases],
+    }
 
 
 def _mock_verify(data: dict[str, Any]) -> dict[str, Any]:

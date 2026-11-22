@@ -6,7 +6,7 @@ import logging
 import time
 from collections.abc import Callable
 
-from app.pipeline import ingest, motion, transcribe, understand
+from app.pipeline import align, ingest, motion, segment, summarize, transcribe, understand
 from app.pipeline.context import JobContext
 
 log = logging.getLogger("replay.pipeline")
@@ -65,5 +65,17 @@ def run_pipeline(ctx: JobContext, completed: set[str], on_stage_done: StageDone)
     finish("transcribe", t)
 
     t = begin("understand")
-    understand.run(ctx, work, motion_data, transcript)
+    actions = understand.run(ctx, work, motion_data, transcript)
     finish("understand", t)
+
+    t = begin("segment")
+    steps = segment.run(ctx, motion_data, actions, transcript)
+    finish("segment", t)
+
+    t = begin("summarize")
+    summary = summarize.run(ctx, steps)
+    finish("summarize", t)
+
+    t = begin("align")
+    align.run(ctx, steps, summary)
+    finish("align", t)
