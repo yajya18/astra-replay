@@ -47,7 +47,6 @@ await shot(`/results/${skipped.job_id}`, "search.png", async () => {
   await page.getByRole("list", { name: "Search results" }).waitFor();
   await box.scrollIntoViewIfNeeded();
 });
-await shot(`/jobs/${skipped.job_id}`, "processing.png");
 await shot(`/xr?job=${skipped.job_id}`, "xr.png", async () => {
   await page.waitForTimeout(2500);
 });

@@ -109,7 +109,7 @@ export const StepCard = forwardRef<HTMLLIElement, Props>(function StepCard(
           type="button"
           onClick={() => onPlayClip(step)}
           className="absolute bottom-2 right-2 inline-flex items-center gap-1 rounded-md border border-border bg-surface px-2 py-1 text-xs font-medium hover:bg-surface-2"
-          aria-label={`Play clip of step ${step.order}: ${step.title}`}
+          aria-label={`Clip of step ${step.order}: ${step.title}`}
         >
           <Play className="h-3 w-3" aria-hidden /> Clip
         </button>

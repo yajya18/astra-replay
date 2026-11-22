@@ -55,7 +55,7 @@ describe("StepCard", () => {
     );
     await userEvent.click(screen.getByRole("button", { name: /seek the video/i }));
     expect(onSelect).toHaveBeenCalledWith(step);
-    await userEvent.click(screen.getByRole("button", { name: /play clip/i }));
+    await userEvent.click(screen.getByRole("button", { name: /clip of step/i }));
     expect(onPlayClip).toHaveBeenCalledWith(step);
   });
 

@@ -74,6 +74,25 @@ This file is the running plan. Items are ticked as each one is finished and veri
   - [ ] Submission deck (docs/presentation)
   - [ ] Demo video (docs/media)
 
+#### Acceptance checklist status (local run, re-verified in the final pass)
+
+| Item | Status |
+|---|---|
+| `docker compose up` on a clean machine | **Not verified**: Docker isn't installed on the build machine. Compose and Dockerfiles are written and statically checked. `make dev` works locally. |
+| Full flow with no API keys (mock mode) | ✅ Playwright e2e: upload → live progress → results with steps, seek, search |
+| Real key, 2–3 min phone video | **Needs the user**: no API key or real recording was available. Providers are request-shape tested offline. |
+| Portrait, HEVC, VFR, no-audio work; too-long, too-big, corrupt, non-video rejected clearly | ✅ integration tests on synthetic videos |
+| Range seeking; chapter markers; active-step sync | ✅ 206 tests; checked in the browser |
+| Search by exact word and meaning; answer cites a timestamp | ✅ tests + browser |
+| Missed / out-of-order detection on fixtures and the skipped-step demo | ✅ unit tests; demos: "6 of 7 … skipped 'Chop the chives'", out-of-order shelf |
+| Highlight reel plays, captions + title cards, within ±10 % of target | ✅ ffprobe test (25 s target) |
+| Exports download and open (PDF keyframes, valid SRT/VTT) | ✅ tests |
+| Cancel and retry; restart leaves no stuck jobs | ✅ tests; checked in the browser (interrupted → Retry resumes at the failed stage) |
+| ruff, mypy, eslint, tsc, pytest, vitest, Playwright | ✅ all pass |
+| Lighthouse a11y ≥ 90 on landing and results; 375 px layout | ✅ 100 / 100 (desktop and mobile); no horizontal scroll at 375 px |
+| No TODOs, placeholders, dead links, secrets; `.env.example` complete | ✅ scanned; a test enforces `.env.example` completeness |
+| README quickstart from a fresh clone | ✅ local path (see final report); Docker path not verified |
+
 ## File tree
 
 ```

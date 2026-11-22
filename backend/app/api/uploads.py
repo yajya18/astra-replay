@@ -28,7 +28,7 @@ class ParsedUpload:
 
 
 class _TooLargeError(Exception):
-    pass
+    """The file part exceeded the size limit while streaming."""
 
 
 async def parse_multipart_upload(
