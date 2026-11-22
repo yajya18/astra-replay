@@ -117,9 +117,10 @@ export default function AboutPage() {
         </h2>
         <Card className="mt-4 p-5 text-sm">
           <p>
-            Built for the Samsung PRISM XR Hackathon, track &ldquo;Action Aware Video
-            Summarization&rdquo;. Team members and contacts are listed in the project README.
+            Built by Team Astra, Thapar Institute of Engineering and Technology, for the Samsung
+            PRISM XR Hackathon, track 4, &ldquo;Action Aware Video Summarization&rdquo;.
           </p>
+          <p className="mt-2 text-muted">Yajya Arora, Sandhi Gahlot, Hardik Jain, Durva.</p>
           <ul className="mt-3 flex flex-wrap gap-4">
             <li>
               <Link href="/" className="font-medium text-accent hover:underline">
@@ -135,6 +136,14 @@ export default function AboutPage() {
               <Link href="/xr" className="font-medium text-accent hover:underline">
                 XR preview
               </Link>
+            </li>
+            <li>
+              <a
+                href="https://github.com/yajya18/astra-replay"
+                className="font-medium text-accent hover:underline"
+              >
+                Source on GitHub
+              </a>
             </li>
             <li>
               <ApiDocsLink className="font-medium text-accent hover:underline" />

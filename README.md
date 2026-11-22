@@ -7,7 +7,14 @@ transcript-based summarisers, it organises everything around **actions: verb + o
 flag the steps you **missed or did out of order** against your recipe, and produces a captioned
 one-minute highlight reel.
 
-Built for the **Samsung PRISM XR Hackathon**, track *Action Aware Video Summarization*.
+Built by **Team Astra** (Thapar Institute of Engineering and Technology) for the **Samsung PRISM
+XR Hackathon**, track 4, *Action Aware Video Summarization*. Source:
+[github.com/yajya18/astra-replay](https://github.com/yajya18/astra-replay).
+
+| Team Astra | |
+|---|---|
+| Yajya Arora | Sandhi Gahlot |
+| Hardik Jain | Durva |
 
 | Upload | Live processing | Results |
 |---|---|---|
@@ -15,8 +22,8 @@ Built for the **Samsung PRISM XR Hackathon**, track *Action Aware Video Summariz
 | **Search** | **Procedure check** | **XR preview** |
 | ![Search answer with timestamp](docs/screenshots/search.png) | ![Missed step flagged by the procedure check](docs/screenshots/procedure-check.png) | ![Step cards floating in 3D](docs/screenshots/xr.png) |
 
-*Screenshots show the synthetic placeholder demos in mock mode; re-capture them with your own
-recordings (see "Screenshots" below).*
+*Screenshots show the three bundled demos. Their footage is synthetic (colour blocks), rendered
+in mock mode; see "Screenshots" below to retake them with your own recordings.*
 
 ## Features
 
