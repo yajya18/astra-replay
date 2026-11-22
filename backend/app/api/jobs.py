@@ -96,7 +96,9 @@ def create_job_record(
     job_dir = get_settings().jobs_dir / job_id
     info = probe_file(next(job_dir.glob("input.*")))
     validate_probe(info, get_settings())
-    (job_dir / "probe.json").write_text(info.model_dump_json(indent=2), encoding="utf-8")
+    (job_dir / "probe.json").write_text(
+        info.model_dump_json(indent=2), encoding="utf-8", newline="\n"
+    )
     with session_scope() as session:
         session.add(
             Job(

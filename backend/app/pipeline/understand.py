@@ -136,7 +136,7 @@ def run(
     else:
         planned = windowing.plan_windows(work.duration, motion, s)
         ctx.progress(0.01, f"Planned {len(planned)} windows")
-        windows = windowing.sample_frames(_SubProgress(ctx, 0.0, 0.15), work, planned)
+        windows = windowing.sample_frames(ctx.sub(0.0, 0.15), work, planned)
         ctx.write_json("windows.json", windows)
     ctx.update_info(windows_total=len(windows), windows_analyzed=0, first_actions=[])
 
@@ -218,16 +218,3 @@ def run(
     ctx.write_json("actions.json", ordered)
     ctx.update_info(window_errors=errors, cached_windows=sum(1 for r in ordered if r.cached))
     return ordered
-
-
-class _SubProgress(JobContext):
-    """A view of the context that maps 0..1 progress into a sub-range of the stage."""
-
-    def __init__(self, parent: JobContext, lo: float, hi: float) -> None:
-        self.__dict__.update(parent.__dict__)
-        self._parent = parent
-        self._lo = lo
-        self._hi = hi
-
-    def progress(self, fraction: float, message: str = "") -> None:
-        self._parent.progress(self._lo + (self._hi - self._lo) * fraction, message)

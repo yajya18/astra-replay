@@ -39,12 +39,12 @@ This file is the running plan. Items are ticked as each one is finished and veri
 - [x] Optional faster-whisper transcription, commit
 
 ### M5 — Media, search, exports
-- [ ] Keyframes (sharpness × motion-peak closeness, WebP + JPEG, 480 px)
-- [ ] Per-step clips (accurate cuts, H.264, faststart)
-- [ ] Highlight reel (√duration budgets, captions, title/closing cards, crossfades with hard-cut fallback, thumbnail)
-- [ ] Hybrid search (embeddings + BM25) + LLM/mock answer
-- [ ] Exports: result.json, report.md, report.pdf, chapters.srt, chapters.vtt
-- [ ] Range-enabled media serving; ffprobe checks of every output in tests, commit
+- [x] Keyframes (sharpness × motion-peak closeness, WebP + JPEG, 480 px)
+- [x] Per-step clips (accurate cuts, H.264, faststart)
+- [x] Highlight reel (√duration budgets, captions, title/closing cards, crossfades with hard-cut fallback, thumbnail)
+- [x] Hybrid search (embeddings + BM25) + LLM/mock answer
+- [x] Exports: result.json, report.md, report.pdf, chapters.srt, chapters.vtt
+- [x] Range-enabled media serving; ffprobe checks of every output in tests, commit
 
 ### M6 — Frontend
 - [ ] API client + types mirrored from backend schemas, TanStack Query

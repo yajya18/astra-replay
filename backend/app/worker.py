@@ -284,6 +284,7 @@ class Worker:
             on_info=on_info,
             is_cancelled=lambda: self._is_cancelled(job_id),
             info=info,
+            stage_timings=timings,
         )
         try:
             pipeline_run.run_pipeline(ctx, completed, on_stage_done)

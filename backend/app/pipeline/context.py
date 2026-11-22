@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 from collections.abc import Callable
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Any, TypeVar
 
@@ -44,6 +44,7 @@ class JobContext:
     is_cancelled: Callable[[], bool] = _never
     stage: str = "ingest"
     info: dict[str, Any] = field(default_factory=dict)
+    stage_timings: dict[str, float] = field(default_factory=dict)
 
     # ------------------------------------------------------------------ control
     def check_cancelled(self) -> None:
@@ -52,6 +53,17 @@ class JobContext:
 
     def progress(self, fraction: float, message: str = "") -> None:
         self.on_progress(self.stage, max(0.0, min(1.0, fraction)), message)
+
+    def sub(self, lo: float, hi: float) -> JobContext:
+        """A view whose progress 0..1 maps into [lo, hi] of the current stage."""
+        parent = self
+
+        def mapped(stage: str, fraction: float, message: str) -> None:
+            parent.on_progress(stage, lo + (hi - lo) * fraction, message)
+
+        view = replace(self, on_progress=mapped)
+        view.info = self.info  # share live info
+        return view
 
     def update_info(self, **values: Any) -> None:
         self.info.update(values)
@@ -73,7 +85,7 @@ class JobContext:
         else:
             text = json.dumps(_dump(data), indent=2)
         tmp = path.with_suffix(path.suffix + ".tmp")
-        tmp.write_text(text, encoding="utf-8")
+        tmp.write_text(text, encoding="utf-8", newline="\n")
         tmp.replace(path)
         return path
 

@@ -10,7 +10,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app import __version__
-from app.api import health, jobs, media
+from app.api import demo, exports, health, jobs, media, results, search
 from app.config import get_settings
 from app.db import init_db
 from app.errors import install_error_handlers
@@ -70,7 +70,7 @@ def create_app() -> FastAPI:
         expose_headers=["Content-Range", "Accept-Ranges", "Content-Length", "Content-Disposition"],
     )
     install_error_handlers(app)
-    for module in (health, jobs, media):
+    for module in (health, jobs, results, search, exports, demo, media):
         app.include_router(module.router)
     return app
 
