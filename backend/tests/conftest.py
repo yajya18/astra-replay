@@ -50,6 +50,9 @@ def client() -> Iterator[TestClient]:
     reset_settings_cache()
     reset_engine()
     from app.main import create_app
+    from app.providers.registry import reset_providers
+
+    reset_providers()
 
     with TestClient(create_app()) as c:
         yield c

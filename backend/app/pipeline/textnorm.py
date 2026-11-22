@@ -207,8 +207,6 @@ SYNONYMS: dict[str, str] = {
     "saute": "fry",
     "sauté": "fry",
     "rinse": "wash",
-    "tighten": "screw",
-    "fasten": "screw",
     "sprinkle": "season",
     "salt": "season",
     "smear": "spread",
@@ -317,3 +315,155 @@ def normalize_phrase(text: str) -> str:
     while words and words[0] in {"a", "an", "the", "some", "my"}:
         words = words[1:]
     return " ".join(words)
+
+
+_PREPOSITIONS = {
+    "with",
+    "using",
+    "in",
+    "into",
+    "on",
+    "onto",
+    "to",
+    "for",
+    "until",
+    "from",
+    "over",
+    "under",
+    "at",
+    "by",
+    "through",
+    "inside",
+    "across",
+    "around",
+    "off",
+    "of",
+}
+_TOOL_MARKERS = {"with", "using"}
+_NUMBER_WORDS = {"one", "two", "three", "four", "five", "six", "half", "a", "an", "the", "some"}
+_UNITS = {
+    "cup",
+    "cups",
+    "tbsp",
+    "tsp",
+    "g",
+    "kg",
+    "ml",
+    "l",
+    "pinch",
+    "slice",
+    "slices",
+    "tablespoon",
+    "tablespoons",
+    "teaspoon",
+    "teaspoons",
+    "piece",
+    "pieces",
+}
+_LEADING = re.compile(r"^\s*(?:step\s*)?(?:\d+[\.\):\-]?|[-*•]|\(\d+\))\s*", re.IGNORECASE)
+
+
+def strip_numbering(line: str) -> str:
+    return _LEADING.sub("", line).strip()
+
+
+def parse_step_text(text: str) -> tuple[str, str, str]:
+    """Heuristic (verb, object, tool) from a procedure line like 'Crack 2 eggs into a bowl'."""
+    words = tokens(strip_numbering(text))
+    if not words:
+        return "unknown", "", ""
+    verb = normalize_verb(words[0])
+    obj_words: list[str] = []
+    tool_words: list[str] = []
+    mode = "object"
+    for w in words[1:]:
+        if w in _PREPOSITIONS:
+            if obj_words and mode == "object":
+                mode = "tool" if w in _TOOL_MARKERS else "rest"
+            elif w in _TOOL_MARKERS:
+                mode = "tool"
+            continue
+        if w.isdigit() or w in _NUMBER_WORDS or w in _UNITS:
+            continue
+        if mode == "object":
+            obj_words.append(w)
+        elif mode == "tool":
+            tool_words.append(w)
+    return verb, " ".join(obj_words[:3]), " ".join(tool_words[:2])
+
+
+def gerund(verb: str) -> str:
+    v = verb.lower()
+    if not v or v == "unknown":
+        return "doing something"
+    if v.endswith("ie"):
+        return v[:-2] + "ying"
+    if v.endswith("e") and not v.endswith(("ee", "ye", "oe")):
+        return v[:-1] + "ing"
+    if (
+        len(v) >= 3
+        and v[-1] not in "aeiouwxy"
+        and v[-2] in "aeiou"
+        and v[-3] not in "aeiou"
+        and v
+        in {
+            "chop",
+            "stir",
+            "cut",
+            "put",
+            "dip",
+            "drop",
+            "flip",
+            "grab",
+            "pat",
+            "plug",
+            "rub",
+            "scrub",
+            "set",
+            "ship",
+            "skim",
+            "slip",
+            "snip",
+            "spin",
+            "strip",
+            "swap",
+            "tap",
+            "trim",
+            "whip",
+            "wrap",
+            "zip",
+            "mop",
+            "pop",
+            "sit",
+        }
+    ):
+        return v + v[-1] + "ing"
+    return v + "ing"
+
+
+def imperative_title(verb: str, obj: str, tool: str = "") -> str:
+    """Deterministic step title, e.g. ('chop', 'onion') -> 'Chop the onion'."""
+    v = (verb or "").strip().lower()
+    o = normalize_phrase(obj or "")
+    if not v or v == "unknown":
+        return f"Work on the {o}" if o else "Unclear action"
+    title = v.capitalize()
+    if o:
+        title += f" the {o}"
+    t = normalize_phrase(tool or "")
+    if t and t not in {"hand", "hands"} and t != o:
+        title += f" with the {t}"
+    return title
+
+
+def parse_reference_steps(text: str | None) -> list[str]:
+    """Reference procedure (one step per line, optionally numbered) -> clean ordered list."""
+    if not text:
+        return []
+    steps: list[str] = []
+    for raw in text.replace("\r", "\n").split("\n"):
+        line = strip_numbering(raw.strip())
+        line = re.sub(r"\s+", " ", line).strip(" .;:-")
+        if len(line) >= 2 and any(ch.isalpha() for ch in line):
+            steps.append(line[:200])
+    return steps[:60]

@@ -46,10 +46,15 @@ class WindowContext(BaseModel):
     transcript: str | None = None
     vocabulary: list[str] = Field(default_factory=list)  # reference steps, as hints
     previous_action: str | None = None
+    video_duration: float = 0.0
 
 
 class ProviderError(RuntimeError):
     """A provider call failed in a way that should not be retried."""
+
+
+class FatalProviderError(ProviderError):
+    """Misconfiguration (missing key, bad model, auth failure): stop the job with a message."""
 
 
 class RetryableProviderError(ProviderError):
