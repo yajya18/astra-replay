@@ -5,7 +5,12 @@ from __future__ import annotations
 import importlib.util
 import logging
 import threading
+import wave
+from pathlib import Path
 from typing import Any
+
+import numpy as np
+import numpy.typing as npt
 
 from app.pipeline.context import JobContext
 from app.pipeline.types import TranscriptSegment, WorkVideo
@@ -87,9 +92,8 @@ def run(ctx: JobContext, work: WorkVideo) -> list[TranscriptSegment]:
                 ctx.write_json("transcript.json", [])
                 ctx.update_info(transcript_segments=0, transcript_skipped="model downloading")
                 return []
-            raw_segments, _info = model.transcribe(
-                str(ctx.path(work.audio_filename or "audio.wav")), vad_filter=True, beam_size=1
-            )
+            samples = load_wav(ctx.path(work.audio_filename or "audio.wav"))
+            raw_segments, _info = model.transcribe(samples, vad_filter=True, beam_size=1)
             for seg in raw_segments:
                 ctx.check_cancelled()
                 text = str(seg.text).strip()
@@ -110,6 +114,20 @@ def run(ctx: JobContext, work: WorkVideo) -> list[TranscriptSegment]:
     ctx.write_json("transcript.json", segments)
     ctx.update_info(transcript_segments=len(segments))
     return segments
+
+
+def load_wav(path: Path) -> npt.NDArray[np.float32]:
+    """Mono 16-bit PCM WAV (written by ingest) -> float32 samples in [-1, 1].
+
+    Passing samples avoids faster-whisper's PyAV decoder, which breaks with new PyAV releases.
+    """
+    with wave.open(str(path), "rb") as wav:
+        frames = wav.readframes(wav.getnframes())
+        channels = wav.getnchannels()
+    audio = np.frombuffer(frames, dtype=np.int16).astype(np.float32) / 32768.0
+    if channels > 1:
+        audio = audio.reshape(-1, channels).mean(axis=1)
+    return audio
 
 
 def text_between(segments: list[TranscriptSegment], start: float, end: float) -> str:

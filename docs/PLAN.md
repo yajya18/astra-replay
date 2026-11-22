@@ -47,20 +47,20 @@ This file is the running plan. Items are ticked as each one is finished and veri
 - [x] Range-enabled media serving; ffprobe checks of every output in tests, commit
 
 ### M6 — Frontend
-- [ ] API client + types mirrored from backend schemas, TanStack Query
-- [ ] `/` landing + upload (client validation, preview, progress)
-- [ ] `/jobs/[id]` live progress (SSE with polling fallback), cancel, retry
-- [ ] `/results/[id]` player + chapter timeline, step cards, scroll sync, clip modal, search, procedure panel, highlight reel, exports, under-the-hood
-- [ ] `/demo`, `/about`
-- [ ] Component tests (Vitest + RTL), Playwright e2e (upload → results in mock mode), commit
+- [x] API client + types mirrored from backend schemas, TanStack Query
+- [x] `/` landing + upload (client validation, preview, progress)
+- [x] `/jobs/[id]` live progress (SSE with polling fallback), cancel, retry
+- [x] `/results/[id]` player + chapter timeline, step cards, scroll sync, clip modal, search, procedure panel, highlight reel, exports, under-the-hood
+- [x] `/demo`, `/about`
+- [x] Component tests (Vitest + RTL), Playwright e2e (upload → results in mock mode), commit
 
 ### M7 — Demo, evaluation, docs
-- [ ] `demo/` folders with reference + ground truth, synthetic placeholders, `precompute_demo.py`, `make demo`
-- [ ] `scripts/evaluate.py` + `docs/EVALUATION.md`
-- [ ] README, ARCHITECTURE, DEMO_SCRIPT, DECISIONS, commit
+- [x] `demo/` folders with reference + ground truth, synthetic placeholders, `precompute_demo.py`, `make demo`
+- [x] `scripts/evaluate.py` + `docs/EVALUATION.md`
+- [x] README, ARCHITECTURE, DEMO_SCRIPT, DECISIONS, commit
 
 ### M8 — XR preview
-- [ ] React Three Fiber step-card scene on `/xr` and `/about`, WebXR enter via `@react-three/xr`, commit
+- [x] React Three Fiber step-card scene on `/xr` and `/about`, WebXR enter via `@react-three/xr`, commit
 
 ### M9 — Hardening
 - [ ] Acceptance checklist pass (Section 10 of the spec), final commit

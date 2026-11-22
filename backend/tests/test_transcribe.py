@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import shutil
+import time
 from pathlib import Path
 
 import pytest
@@ -44,6 +45,18 @@ def test_faster_whisper_runs(settings_env: pytest.MonkeyPatch, tmp_path: Path) -
     work = WorkVideo(
         duration=3, width=10, height=10, fps=30, has_audio=True, audio_filename="audio.wav"
     )
+    model = None
+    for _ in range(600):  # the first call may start a background download
+        model = transcribe._get_model("tiny", "cpu", "int8")
+        if model is not None:
+            break
+        time.sleep(0.5)
+    assert model is not None
+    samples = transcribe.load_wav(wav)
+    assert samples.dtype.name == "float32"
+    assert abs(len(samples) / 16000 - 3.0) < 0.1
+    raw, _ = model.transcribe(samples, vad_filter=False, beam_size=1)
+    list(raw)  # decoding must not raise
     segments = transcribe.run(ctx, work)
     assert isinstance(segments, list)
     shutil.rmtree(tmp_path, ignore_errors=True)

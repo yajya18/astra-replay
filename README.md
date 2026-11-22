@@ -9,10 +9,14 @@ one-minute highlight reel.
 
 Built for the **Samsung PRISM XR Hackathon**, track *Action Aware Video Summarization*.
 
-<!-- Screenshots: replace these with your own captures (see "Screenshots" below). -->
 | Upload | Live processing | Results |
 |---|---|---|
-| ![Upload](docs/screenshots/upload.png) | ![Processing](docs/screenshots/processing.png) | ![Results](docs/screenshots/results.png) |
+| ![Upload page with drag-and-drop zone and reference procedure](docs/screenshots/upload.png) | ![Live stage checklist](docs/screenshots/processing.png) | ![Results with chapter timeline and step cards](docs/screenshots/results.png) |
+| **Search** | **Procedure check** | **XR preview** |
+| ![Search answer with timestamp](docs/screenshots/search.png) | ![Missed step flagged by the procedure check](docs/screenshots/procedure-check.png) | ![Step cards floating in 3D](docs/screenshots/xr.png) |
+
+*Screenshots show the synthetic placeholder demos in mock mode; re-capture them with your own
+recordings (see "Screenshots" below).*
 
 ## Features
 
@@ -173,9 +177,10 @@ Errors always look like `{"error": {"code": "...", "message": "..."}}`.
 
 ## Screenshots
 
-Capture `upload.png`, `processing.png` and `results.png` (and optionally a GIF of search and the
-procedure check) into `docs/screenshots/`, and the table at the top of this README will show them.
-A 1440×900 browser window in dark mode looks best.
+`cd frontend && npm run screenshots` captures the six screenshots above from the running app
+(`make dev`, after `make demo`) into `docs/screenshots/` at 1440×900 in dark mode. Re-run it
+after adding your real demo recordings. For a GIF of search and the procedure check, record the
+results page with any screen recorder.
 
 ## Known limitations
 
