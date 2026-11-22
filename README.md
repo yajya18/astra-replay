@@ -182,6 +182,22 @@ idle stills, hard cuts, portrait-rotated, no-audio, HEVC and VFR variants), cach
 
 Errors always look like `{"error": {"code": "...", "message": "..."}}`.
 
+## Demo video
+
+[`docs/media/replay-demo.mp4`](docs/media/replay-demo.mp4) is a 2:44, 1080p walkthrough with captions
+and an original synthesized music bed (no voiceover, nothing sampled). **The footage is the synthetic
+demo videos processed in mock mode**, so it shows the product and the pipeline, not model
+accuracy. It was captured from the running app with Playwright and assembled with ffmpeg:
+
+```bash
+node frontend/scripts/record-demo.mjs /tmp/rec                  # app on :3000 / :8000, after make demo
+python docs/media/tools/frames_to_video.py /tmp/rec
+(cd backend && uv run python ../docs/media/tools/make_music.py /tmp/music.wav 170)
+python docs/media/tools/compose_demo.py /tmp/rec /tmp/music.wav docs/media/replay-demo.mp4
+```
+
+Replace it with a recording of your own demos once you have them.
+
 ## Screenshots
 
 `cd frontend && npm run screenshots` captures the six screenshots above from the running app
