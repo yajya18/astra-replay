@@ -28,7 +28,7 @@ export default function Home() {
         <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:py-16 lg:grid-cols-[1.05fr_1fr] lg:items-start">
           <div>
             <p className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs font-medium text-muted">
-              <Hand className="h-3.5 w-3.5 text-accent" aria-hidden /> Action-aware, not scene-aware
+              <Hand className="h-3.5 w-3.5 text-accent" aria-hidden /> Summaries built from actions
             </p>
             <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">
               Your long how-to video, replayed as{" "}

@@ -70,7 +70,7 @@ This file is the running plan. Items are ticked as each one is finished and veri
   - [x] 4 browser review at desktop and 375 px, Lighthouse
   - [x] 5 README screenshots, team section
   - [x] 6 acceptance checks
-  - [ ] 7 copy polish
+  - [x] 7 copy polish
   - [ ] Submission deck (docs/presentation)
   - [ ] Demo video (docs/media)
 
