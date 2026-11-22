@@ -62,10 +62,14 @@ def client() -> Iterator[TestClient]:
 @pytest.fixture(scope="session")
 def synthetic_videos() -> dict[str, Path]:
     """Synthetic test videos generated once per session with ffmpeg."""
+    from filelock import FileLock
+
     from scripts.make_test_video import generate_test_set
 
     FIXTURE_VIDEOS.mkdir(parents=True, exist_ok=True)
-    return generate_test_set(FIXTURE_VIDEOS)
+    # Parallel test workers share the fixture folder; generate it only once.
+    with FileLock(str(FIXTURE_VIDEOS / ".lock")):
+        return generate_test_set(FIXTURE_VIDEOS)
 
 
 @pytest.fixture

@@ -35,7 +35,7 @@ dev-frontend:
 test: test-backend test-frontend
 
 test-backend:
-	cd $(BACKEND) && $(UV) run pytest -q
+	cd $(BACKEND) && $(UV) run pytest -q -n 4 --dist loadfile
 
 test-frontend:
 	cd $(FRONTEND) && $(NPM) test
