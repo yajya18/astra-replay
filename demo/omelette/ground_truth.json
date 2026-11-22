@@ -1,0 +1,40 @@
+{
+  "source": "synthetic placeholder (replace with hand labels for a real recording)",
+  "steps": [
+    {
+      "title": "Crack the eggs",
+      "start": 0.0,
+      "end": 9.0
+    },
+    {
+      "title": "Whisk the eggs",
+      "start": 9.0,
+      "end": 19.0
+    },
+    {
+      "title": "Chop the chives",
+      "start": 23.0,
+      "end": 32.0
+    },
+    {
+      "title": "Heat the butter",
+      "start": 32.0,
+      "end": 40.0
+    },
+    {
+      "title": "Pour the eggs",
+      "start": 40.0,
+      "end": 48.0
+    },
+    {
+      "title": "Fold the omelette",
+      "start": 53.0,
+      "end": 62.0
+    },
+    {
+      "title": "Plate the omelette",
+      "start": 62.0,
+      "end": 70.0
+    }
+  ]
+}

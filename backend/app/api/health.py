@@ -19,6 +19,16 @@ class ProviderInfo(BaseModel):
     mock: bool
 
 
+class Limits(BaseModel):
+    max_upload_mb: int
+    max_duration_s: float
+    min_duration_s: float
+    highlight_min_s: float
+    highlight_max_s: float
+    highlight_default_s: float
+    retention_hours: float
+
+
 class HealthResponse(BaseModel):
     status: str
     version: str
@@ -28,6 +38,7 @@ class HealthResponse(BaseModel):
     ffmpeg: bool
     whisper: bool
     mock_mode: bool
+    limits: Limits
 
 
 def whisper_available() -> bool:
@@ -50,4 +61,13 @@ def health() -> HealthResponse:
         ffmpeg=ff,
         whisper=whisper_available(),
         mock_mode=vlm.mock or llm.mock,
+        limits=Limits(
+            max_upload_mb=s.max_upload_mb,
+            max_duration_s=s.max_duration_s,
+            min_duration_s=s.min_duration_s,
+            highlight_min_s=s.highlight_min_s,
+            highlight_max_s=s.highlight_max_s,
+            highlight_default_s=s.highlight_seconds,
+            retention_hours=s.retention_hours,
+        ),
     )

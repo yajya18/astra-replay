@@ -1,0 +1,15 @@
+{
+  "title": "Omelette with a skipped step",
+  "description": "The same recipe, but the chives are never chopped: the procedure check should flag it.",
+  "highlight_seconds": 45,
+  "synthetic": [
+    {"kind": "action", "hue": 0, "duration": 9, "label": "Crack the eggs"},
+    {"kind": "action", "hue": 1, "duration": 10, "label": "Whisk the eggs"},
+    {"kind": "idle", "duration": 4},
+    {"kind": "action", "hue": 3, "duration": 8, "label": "Heat the butter"},
+    {"kind": "action", "hue": 4, "duration": 8, "label": "Pour the eggs"},
+    {"kind": "action", "hue": 5, "duration": 9, "label": "Fold the omelette"},
+    {"kind": "action", "hue": 6, "duration": 8, "label": "Plate the omelette"}
+  ],
+  "expected_missed": ["Chop the chives with a knife"]
+}

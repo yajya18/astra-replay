@@ -27,6 +27,27 @@ def _configure_logging() -> None:
     logging.getLogger("replay").setLevel(level)
 
 
+def _warm_up_models() -> None:
+    """Load the embedding model and fetch the speech model in the background at startup."""
+    import threading
+
+    from app.api.health import whisper_available
+    from app.embeddings import get_embedder
+    from app.pipeline.transcribe import start_background_download
+
+    s = get_settings()
+
+    def _embeddings() -> None:
+        try:
+            get_embedder()
+        except Exception:
+            log.exception("Embedding model warm-up failed")
+
+    threading.Thread(target=_embeddings, name="embed-warmup", daemon=True).start()
+    if whisper_available():
+        start_background_download(s.whisper_model, s.whisper_device, s.whisper_compute_type)
+
+
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     _configure_logging()
@@ -42,6 +63,7 @@ async def lifespan(_: FastAPI) -> AsyncIterator[None]:
         s.llm_provider,
         s.model_for("llm"),
     )
+    _warm_up_models()
     worker = get_worker()
     worker.start()
     if s.seed_demos_on_startup:

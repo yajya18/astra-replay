@@ -15,22 +15,53 @@ log = logging.getLogger("replay.transcribe")
 _model: Any = None
 _model_key: tuple[str, str, str] | None = None
 _lock = threading.Lock()
+_download_started: set[str] = set()
 
 
 def whisper_installed() -> bool:
     return importlib.util.find_spec("faster_whisper") is not None
 
 
-def _get_model(name: str, device: str, compute_type: str) -> Any:
-    global _model, _model_key
-    with _lock:
-        key = (name, device, compute_type)
-        if _model is None or _model_key != key:
-            from faster_whisper import WhisperModel
+def _load(name: str, device: str, compute_type: str, local_only: bool) -> Any:
+    from faster_whisper import WhisperModel
 
-            _model = WhisperModel(name, device=device, compute_type=compute_type)
+    return WhisperModel(name, device=device, compute_type=compute_type, local_files_only=local_only)
+
+
+def _get_model(name: str, device: str, compute_type: str) -> Any | None:
+    """The cached model, or None if it isn't downloaded yet (download starts in background)."""
+    global _model, _model_key
+    key = (name, device, compute_type)
+    with _lock:
+        if _model is not None and _model_key == key:
+            return _model
+        try:
+            _model = _load(name, device, compute_type, local_only=True)
             _model_key = key
-        return _model
+            return _model
+        except Exception:
+            start_background_download(name, device, compute_type)
+            return None
+
+
+def start_background_download(name: str, device: str, compute_type: str) -> None:
+    """Download (and load) the speech model without blocking any job."""
+    if name in _download_started:
+        return
+    _download_started.add(name)
+
+    def _work() -> None:
+        global _model, _model_key
+        try:
+            model = _load(name, device, compute_type, local_only=False)
+            with _lock:
+                _model, _model_key = model, (name, device, compute_type)
+            log.info("Speech model '%s' ready", name)
+        except Exception as exc:
+            log.warning("Speech model download failed: %s", exc)
+            _download_started.discard(name)
+
+    threading.Thread(target=_work, name="whisper-download", daemon=True).start()
 
 
 def run(ctx: JobContext, work: WorkVideo) -> list[TranscriptSegment]:
@@ -51,6 +82,11 @@ def run(ctx: JobContext, work: WorkVideo) -> list[TranscriptSegment]:
         try:
             ctx.progress(0.05, "Loading speech model")
             model = _get_model(s.whisper_model, s.whisper_device, s.whisper_compute_type)
+            if model is None:
+                ctx.progress(1.0, "Speech model still downloading; skipped for this video")
+                ctx.write_json("transcript.json", [])
+                ctx.update_info(transcript_segments=0, transcript_skipped="model downloading")
+                return []
             raw_segments, _info = model.transcribe(
                 str(ctx.path(work.audio_filename or "audio.wav")), vad_filter=True, beam_size=1
             )

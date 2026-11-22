@@ -1,0 +1,14 @@
+{
+  "title": "Wall shelf assembly",
+  "description": "Assembling a small wall shelf; the shelf pins go in after the board is placed (out of order).",
+  "highlight_seconds": 40,
+  "synthetic": [
+    {"kind": "action", "hue": 0, "duration": 8, "label": "Unpack the shelf panels"},
+    {"kind": "action", "hue": 1, "duration": 10, "label": "Attach the side brackets"},
+    {"kind": "idle", "duration": 4},
+    {"kind": "action", "hue": 3, "duration": 8, "label": "Place the shelf board"},
+    {"kind": "action", "hue": 2, "duration": 8, "label": "Insert the shelf pins"},
+    {"kind": "action", "hue": 4, "duration": 9, "label": "Tighten the bracket screws"}
+  ],
+  "expected_out_of_order": true
+}

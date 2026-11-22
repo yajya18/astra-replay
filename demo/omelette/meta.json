@@ -1,0 +1,16 @@
+{
+  "title": "Chive omelette",
+  "description": "Making an omelette, following every step of the recipe.",
+  "highlight_seconds": 60,
+  "synthetic": [
+    {"kind": "action", "hue": 0, "duration": 9, "label": "Crack the eggs"},
+    {"kind": "action", "hue": 1, "duration": 10, "label": "Whisk the eggs"},
+    {"kind": "idle", "duration": 4},
+    {"kind": "action", "hue": 2, "duration": 9, "label": "Chop the chives"},
+    {"kind": "action", "hue": 3, "duration": 8, "label": "Heat the butter"},
+    {"kind": "action", "hue": 4, "duration": 8, "label": "Pour the eggs"},
+    {"kind": "idle", "duration": 5},
+    {"kind": "action", "hue": 5, "duration": 9, "label": "Fold the omelette"},
+    {"kind": "action", "hue": 6, "duration": 8, "label": "Plate the omelette"}
+  ]
+}
