@@ -56,6 +56,7 @@ def test_result_schema(full_job: Job) -> None:
     assert r["stats"]["step_count"] == 4
     assert r["stats"]["idle_removed_s"] > 2
     assert r["stats"]["compression_ratio"] > 0
+    assert 25 * 0.9 <= r["stats"]["highlight_duration"] <= 25 * 1.1
     assert r["alignment"]["verdict"].startswith("4 of 5")
     assert {s["alignment"] for s in r["steps"]} == {"done"}
     assert r["phases"][0]["start_step"] == 1

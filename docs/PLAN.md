@@ -67,9 +67,9 @@ This file is the running plan. Items are ticked as each one is finished and veri
   - [x] 1 full test and lint run
   - [x] 2 Playwright e2e
   - [x] 3 demo precompute and evaluation table
-  - [ ] 4 browser review at desktop and 375 px, Lighthouse
+  - [x] 4 browser review at desktop and 375 px, Lighthouse
   - [x] 5 README screenshots, team section
-  - [ ] 6 acceptance checks
+  - [x] 6 acceptance checks
   - [ ] 7 copy polish
   - [ ] Submission deck (docs/presentation)
   - [ ] Demo video (docs/media)
