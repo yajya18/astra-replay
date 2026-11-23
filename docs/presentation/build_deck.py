@@ -130,6 +130,9 @@ BOTTOM = H - 300000
 
 def slide1(s):
     set_text(find(s, "Text 7"), [f"Track {TEAM['track_no']}"], size=12)
+    # Arial Black at the template's 72 pt runs into the decorative bars in PowerPoint.
+    for run in find(s, "Text 8").text_frame.paragraphs[0].runs:
+        run.font.size = Pt(62)
     t10 = find(s, "Text 10")
     t10.width = Emu(4300000)
     t10.height = Emu(1500000)
@@ -282,7 +285,7 @@ def slide5(s):
     rh = int(rw * 720 / 1280)
     picture(s, ASSETS / "reel-frame.png", rx, TOP, rw)
     add_text(s, rx, TOP + rh + 60000, rw, 250000, ["Frame from the highlight reel"], size=12, color=MUTED)
-    stats = [("7", "steps from a 1:10 video"), ("60 s", "captioned highlight reel"),
+    stats = [("6", "steps from a 0:56 video"), ("45 s", "captioned highlight reel"),
              ("1", "skipped step flagged")]
     y = TOP + rh + 360000
     for big, small in stats:
