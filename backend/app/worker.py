@@ -208,6 +208,18 @@ class Worker:
             session.refresh(job)
             state = job_state(job)
         with self._lock:
+            prev = self._live.get(job_id)
+            # Progress is saved to the database at most every 0.75 s, so a row read here can be
+            # older than the live state. Within one run progress only moves forward.
+            if (
+                prev is not None
+                and prev.get("status") == JobStatus.RUNNING
+                and state["status"] == JobStatus.RUNNING
+                and prev.get("progress", 0.0) > state["progress"]
+            ):
+                state["progress"] = prev["progress"]
+                state["stage"] = prev.get("stage", state["stage"])
+                state["message"] = prev.get("message", state["message"])
             self._live[job_id] = state
         return job
 
